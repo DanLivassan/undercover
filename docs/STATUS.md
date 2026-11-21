@@ -6,10 +6,11 @@ The pilot is being implemented from `docs/PLAN.md`.
   customers, policies, plans, handlers and policy wording
 - `agent/`: `run(claim_id, thread_id)` reads claims, context, wording and
   instructions through HTTP tools, records decisions and makes simulated payments
-- `dashboard/`: one page that shows whether the backend is up
-- `e2e/`: one test of that page
+- `dashboard/`: queue, claim details, observable agent activity, customer and policy
+  context, read-only instructions, handler sign-off and simulated payments
+- `e2e/`: integration tests are being added in phase 6
 
-Phases 1–4 are complete. The backend initializes `backend/undercover.sqlite3` at startup
+Phases 1–5 are complete. The backend initializes `backend/undercover.sqlite3` at startup
 (override with `UNDERCOVER_DB`). It seeds only a new database and preserves existing
 work on restart. SQLite files are ignored by git. Tests use temporary databases.
 
@@ -33,8 +34,20 @@ thread ID. The CLI skips non-waiting claims, continues after a case fails and ex
 nonzero when there are failures. `uv run -m agent --help` describes both modes.
 The dashboard does not start agent executions.
 
+Open `http://localhost:5173` after `npm run dev`. Select a claim to read its
+documents, decision, calculation and activity; expand the context panels for the
+customer history, policy, travelers, limits and add-ons. Queue, detail and activity
+refresh every two seconds. Use **Agent instructions** for the current read-only
+prompt. For an over-limit approval, select a handler and choose **Authorize and
+pay**. If payment fails after sign-off, repeat just the payment. A decision and
+its authorization survive reloads. The interface adapts to mobile screens.
+
 Validation: 34 Python tests pass with 99% combined coverage; Ruff and Pyright pass.
 Tests use a scripted model and make no calls to OpenRouter.
+The 15 dashboard tests pass with 99% statement coverage. Prettier, ESLint and
+TypeScript pass. Playwright MCP verified keyboard focus, current instructions,
+live events and sign-off at 1440 px and 390 px without horizontal overflow or
+console errors.
 
 Install with `uv sync` and `npm install` (Python 3.12, Node 26). Run the backend and
 dashboard with `npm run dev`. Run checks with `npm run check`.

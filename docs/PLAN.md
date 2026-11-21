@@ -119,15 +119,15 @@ Aplicar Instrument Sans e JetBrains Mono, superfícies arredondadas e cores de `
 
 Critérios de sucesso:
 
-- [ ] Vitest/Testing Library verifica a fila, os quatro estados, seleção de um sinistro, dados completos e decisões de aprovação, recusa e encaminhamento.
-- [ ] Testes com timers controlados verificam atualização da fila e eventos por polling e cancelamento das consultas periódicas ao sair da tela.
-- [ ] A página de instruções mostra o texto real retornado pelo backend, sem campos editáveis.
-- [ ] O fluxo de autorização mostra o atendente e o valor, aguarda a resposta do backend e só apresenta pagamento concluído após sucesso de `/pay`.
-- [ ] Uma falha de pagamento após a autorização fica visível e permite repetir apenas o pagamento, sem duplicação.
-- [ ] Testes cobrem carregamento, fila vazia, indisponibilidade da API e erro na autorização. Botões ficam indisponíveis enquanto a operação estiver em curso.
-- [ ] Pelo Playwright MCP, conferir fila, detalhes, instruções e eventos atualizados em navegador real, em larguras de 1440 px e 390 px, sem rolagem horizontal nem erros no console.
-- [ ] Pelo Playwright MCP, conferir navegação por teclado, rótulos dos controles, foco e valores como `$1,250.00`; verificar cores e fontes contra `docs/BRAND.md`.
-- [ ] `npm run check:ts` passa, com TypeScript estrito, sem `any` e cobertura mínima de 80%; atualizar `docs/STATUS.md` com as telas disponíveis.
+- [x] Vitest/Testing Library verifica a fila, os quatro estados, seleção de um sinistro, dados completos e decisões de aprovação, recusa e encaminhamento.
+- [x] Testes com timers controlados verificam atualização da fila e eventos por polling e cancelamento das consultas periódicas ao sair da tela.
+- [x] A página de instruções mostra o texto real retornado pelo backend, sem campos editáveis.
+- [x] O fluxo de autorização mostra o atendente e o valor, aguarda a resposta do backend e só apresenta pagamento concluído após sucesso de `/pay`.
+- [x] Uma falha de pagamento após a autorização fica visível e permite repetir apenas o pagamento, sem duplicação.
+- [x] Testes cobrem carregamento, fila vazia, indisponibilidade da API e erro na autorização. Botões ficam indisponíveis enquanto a operação estiver em curso.
+- [x] Pelo Playwright MCP, conferir fila, detalhes, instruções e eventos atualizados em navegador real, em larguras de 1440 px e 390 px, sem rolagem horizontal nem erros no console.
+- [x] Pelo Playwright MCP, conferir navegação por teclado, rótulos dos controles, foco e valores como `$1,250.00`; verificar cores e fontes contra `docs/BRAND.md`.
+- [x] `npm run check:ts` passa, com TypeScript estrito, sem `any` e cobertura mínima de 80%; atualizar `docs/STATUS.md` com as telas disponíveis.
 
 ## Fase 6 — Integração, verificação e entrega
 
