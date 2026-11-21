@@ -6,35 +6,20 @@ import httpx
 from dotenv import load_dotenv
 from langchain.agents import create_agent
 from langchain_core.language_models import BaseChatModel
-from langchain_core.tools import tool
 from langchain_openai import ChatOpenAI
 from pydantic import SecretStr
 
-load_dotenv(override=True)
+from agent.api import request
+from agent.tools import claim_tools
 
-BACKEND_URL = "http://localhost:8000"
+load_dotenv()
+
 OPENROUTER_BASE_URL = "https://openrouter.ai/api/v1"
 DEFAULT_MODEL = "openai/gpt-6-luna"
-SYSTEM_PROMPT = """You are the UnderCover Agent.
-Check that the backend is running, then say hello."""
-
-
-def backend() -> httpx.Client:
-    """Return a client for the UnderCover backend."""
-    return httpx.Client(base_url=BACKEND_URL, timeout=10)
-
-
-@tool
-def check_backend() -> str:
-    """Check whether the UnderCover backend is running."""
-    with backend() as client:
-        response = client.get("/api/health")
-    response.raise_for_status()
-    return response.json()["status"]
 
 
 def model() -> ChatOpenAI:
-    """Return the model named in MODEL_NAME, or GPT-6 Luna by default."""
+    """Return MODEL_NAME when set, otherwise GPT-6 Luna with low reasoning effort."""
     name = os.getenv("MODEL_NAME")
     return ChatOpenAI(
         model=name or DEFAULT_MODEL,
@@ -45,12 +30,36 @@ def model() -> ChatOpenAI:
 
 
 def run(claim_id: str, thread_id: str, llm: BaseChatModel | None = None) -> str:
-    """Run the agent on one claim and return its final reply."""
-    agent = create_agent(
-        llm or model(), tools=[check_backend], system_prompt=SYSTEM_PROMPT
-    )
-    result = agent.invoke(
-        {"messages": [{"role": "user", "content": f"Claim {claim_id}"}]},
-        config={"configurable": {"thread_id": thread_id}},
-    )
-    return result["messages"][-1].text
+    """Review one claim through the backend API and return the agent's summary."""
+    base = f"/api/claims/{claim_id}"
+    request("POST", f"{base}/start", {"thread_id": thread_id})
+    try:
+        instructions = request("GET", "/api/agent/instructions")["text"]
+        agent = create_agent(
+            llm or model(),
+            tools=claim_tools(claim_id, thread_id),
+            system_prompt=instructions,
+        )
+        result = agent.invoke(
+            {"messages": [{"role": "user", "content": f"Review claim {claim_id}."}]},
+            config={"configurable": {"thread_id": thread_id}, "recursion_limit": 50},
+        )
+        claim = request("GET", base)
+        if not claim["decision"] or claim["status"] == "in_progress":
+            raise RuntimeError(
+                "The agent stopped before completing the claim workflow."
+            )
+        return result["messages"][-1].text
+    except Exception as error:
+        try:
+            request(
+                "POST",
+                f"{base}/failure",
+                {
+                    "thread_id": thread_id,
+                    "content": f"{type(error).__name__}: {error}",
+                },
+            )
+        except httpx.HTTPError as reporting_error:
+            error.add_note(f"Could not record the failure: {reporting_error}")
+        raise

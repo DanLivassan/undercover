@@ -86,14 +86,14 @@ Usar `openai/gpt-6-luna` com esforço baixo como padrão e respeitar `MODEL_NAME
 
 Critérios de sucesso:
 
-- [ ] Um modelo simulado percorre leitura do sinistro, contexto, condições, decisão e pagamento, deixando eventos ordenados no backend.
-- [ ] Casos sintéticos cobrem aprovação, recusa, encaminhamento por documento ausente e aprovação acima do limite, sem usar gabaritos.
-- [ ] As instruções incluem cálculo na ordem da seção 10, limites por item e benefício, adicionais e referência às condições; não incluem regras exclusivas do manual.
-- [ ] Um teste comprova que a mesma versão de instruções retornada pela API é passada a `create_agent`.
-- [ ] Testes confirmam modelo padrão, esforço baixo e uso de `MODEL_NAME` quando definido. Todos os testes rodam sem chave OpenRouter e sem tráfego para um provedor de modelos.
-- [ ] Não existe ferramenta de autorização no conjunto do agente; tentar pagar acima do limite sem autorização recebe a recusa do backend e não cria pagamento.
-- [ ] Falha HTTP ou falha do modelo fica visível nos eventos, encerra a execução com erro identificável e não deixa um caso sem decisão preso em andamento.
-- [ ] Os testes do agente passam e `docs/STATUS.md` descreve a configuração e o fluxo de análise.
+- [x] Um modelo simulado percorre leitura do sinistro, contexto, condições, decisão e pagamento, deixando eventos ordenados no backend.
+- [x] Casos sintéticos cobrem aprovação, recusa, encaminhamento por documento ausente e aprovação acima do limite, sem usar gabaritos.
+- [x] As instruções incluem cálculo na ordem da seção 10, limites por item e benefício, adicionais e referência às condições; não incluem regras exclusivas do manual.
+- [x] Um teste comprova que a mesma versão de instruções retornada pela API é passada a `create_agent`.
+- [x] Testes confirmam modelo padrão, esforço baixo e uso de `MODEL_NAME` quando definido. Todos os testes rodam sem chave OpenRouter e sem tráfego para um provedor de modelos.
+- [x] Não existe ferramenta de autorização no conjunto do agente; tentar pagar acima do limite sem autorização recebe a recusa do backend e não cria pagamento.
+- [x] Falha HTTP ou falha do modelo fica visível nos eventos, encerra a execução com erro identificável e não deixa um caso sem decisão preso em andamento.
+- [x] Os testes do agente passam e `docs/STATUS.md` descreve a configuração e o fluxo de análise.
 
 ## Fase 4 — Execução individual e processamento da fila
 
