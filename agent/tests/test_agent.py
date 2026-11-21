@@ -42,6 +42,11 @@ def client(tmp_path, monkeypatch):
 
 
 def scripted_model(outcome="approve", amount="420.00", pay=True):
+    explanation = "The policy conditions are met. The costs are covered."
+    section = "3. Trip Delay"
+    if outcome == "refer":
+        explanation = "The required receipt is missing. A handler must request it."
+        section = "11. How to claim"
     actions = [("read_claim", {}), ("read_context", {}), ("read_policy_wording", {})]
     actions.append(
         (
@@ -50,8 +55,8 @@ def scripted_model(outcome="approve", amount="420.00", pay=True):
                 "outcome": outcome,
                 "amount": amount,
                 "calculation": "Eligible costs: $420.",
-                "explanation": "The policy conditions are met. The costs are covered.",
-                "policy_section": "3. Trip Delay",
+                "explanation": explanation,
+                "policy_section": section,
             },
         )
     )

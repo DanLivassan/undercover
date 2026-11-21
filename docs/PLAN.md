@@ -135,19 +135,19 @@ Consolidar os fluxos completos com backend real, SQLite temporário e modelo sim
 
 Critérios de sucesso:
 
-- [ ] Playwright verifica um caso que sai de `waiting`, exibe eventos em `in_progress` e termina aprovado e pago, com decisão e justificativa no detalhe.
-- [ ] Playwright verifica aprovação acima de US$ 1.000: a API bloqueia pagamento direto antes da autorização, o dashboard mostra a pendência, um atendente autoriza e um único pagamento é registrado.
-- [ ] Playwright verifica recusa e encaminhamento, exibindo motivos e seção da apólice, sem pagamento ou ação de autorização.
-- [ ] Uma verificação integrada demonstra persistência de decisão, eventos e pagamento após reiniciar o backend no mesmo banco temporário.
-- [ ] `uv sync` e `npm install` na raiz completam a instalação; o hook de pre-commit está instalado. Usar Python 3.12 e Node 26 conforme a documentação.
-- [ ] `npm run dev` inicia backend e dashboard; `GET /api/health` retorna `200 {"status":"ok"}` e o navegador abre a fila.
-- [ ] `npm run check` passa integralmente: Ruff, Pyright, pytest com cobertura mínima de 80%, Prettier, ESLint, TypeScript, Vitest com cobertura mínima de 80% e Playwright.
-- [ ] Scripts adicionados funcionam em Windows e Linux/macOS, usando comandos `uv run` ou arquivos `.mjs`, sem dependência de sintaxe exclusiva do Bash.
-- [ ] `docs/STATUS.md` registra instalação, inicialização, localização do banco, CLI nos dois modos, configuração do modelo, autorização, testes e limites conhecidos do piloto.
-- [ ] Revisar o diff final para confirmar ausência de acesso a gabaritos, manual ou dados de etapas futuras, de segredos versionados e de recursos AWS.
+- [x] Playwright verifica um caso que sai de `waiting`, exibe eventos em `in_progress` e termina aprovado e pago, com decisão e justificativa no detalhe.
+- [x] Playwright verifica aprovação acima de US$ 1.000: a API bloqueia pagamento direto antes da autorização, o dashboard mostra a pendência, um atendente autoriza e um único pagamento é registrado.
+- [x] Playwright verifica recusa e encaminhamento, exibindo motivos e seção da apólice, sem pagamento ou ação de autorização.
+- [x] Uma verificação integrada demonstra persistência de decisão, eventos e pagamento após reiniciar o backend no mesmo banco temporário.
+- [x] `uv sync` e `npm install` na raiz completam a instalação; o hook de pre-commit está instalado. Usar Python 3.12 e Node 26 conforme a documentação.
+- [x] `npm run dev` inicia backend e dashboard; `GET /api/health` retorna `200 {"status":"ok"}` e o navegador abre a fila.
+- [x] `npm run check` passa integralmente: Ruff, Pyright, pytest com cobertura mínima de 80%, Prettier, ESLint, TypeScript, Vitest com cobertura mínima de 80% e Playwright.
+- [x] Scripts adicionados funcionam em Windows e Linux/macOS, usando comandos `uv run` ou arquivos `.mjs`, sem dependência de sintaxe exclusiva do Bash.
+- [x] `docs/STATUS.md` registra instalação, inicialização, localização do banco, CLI nos dois modos, configuração do modelo, autorização, testes e limites conhecidos do piloto.
+- [x] Revisar o diff final para confirmar ausência de acesso a gabaritos, manual ou dados de etapas futuras, de segredos versionados e de recursos AWS.
 
 ## Como implementar após a revisão
 
-Este documento é somente o plano; nenhuma fase está concluída. Aguardar a solicitação de implementação do estudante.
+Implementação autorizada e concluída nas seis fases. Os critérios acima foram verificados com testes automatizados e inspeção no navegador; veja `docs/STATUS.md` para execução e resultados.
 
 Na implementação, executar as seis fases em ordem. Em cada fase, construir com testes, verificar os critérios, marcar somente os itens comprovados, atualizar `docs/STATUS.md` e fazer commit com o hook ativo. Corrigir falhas sem desativar regras ou reduzir cobertura. Não fazer push. Ao concluir, executar `npm run check` e informar o resultado e qualquer limitação restante.

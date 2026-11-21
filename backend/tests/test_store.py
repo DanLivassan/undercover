@@ -67,3 +67,23 @@ def test_missing_record(store):
         store.context("missing")
     with store.connect() as db, pytest.raises(KeyError):
         store.record(db, "customers", "missing")
+
+
+def test_seed_preserves_unicode_and_fractional_dollars(tmp_path, monkeypatch):
+    original = Store.read_json
+
+    def seed(name):
+        data = original(name)
+        if name == "claims.json":
+            data[0]["story"] = "Óculos perdidos em São Paulo — recibo anexado."
+            data[0]["items"] = [{"description": "Óculos", "amount": "35.51"}]
+            data[0]["documents"] = [{"name": 'Recibo "Ótica"', "content": "US$ 35.51"}]
+        return data
+
+    monkeypatch.setattr(Store, "read_json", staticmethod(seed))
+    store = Store(tmp_path / "unicode.sqlite3")
+    store.initialize()
+    claim = store.claims()[0]
+    assert claim["story"] == "Óculos perdidos em São Paulo — recibo anexado."
+    assert claim["items"][0]["amount"] == "35.51"
+    assert claim["documents"][0]["name"] == 'Recibo "Ótica"'
