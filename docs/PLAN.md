@@ -65,16 +65,16 @@ Aprovar acima do limite leva a `waiting_for_sign_off`, sem pagamento. Um atenden
 
 Critérios de sucesso:
 
-- [ ] TestClient verifica `200` nos endpoints de leitura, os 25 casos na ordem correta e `404` para um identificador inexistente.
-- [ ] A reserva só aceita `waiting`; duas tentativas concorrentes resultam em uma reserva e um conflito. Escritas da execução exigem o `thread_id` ativo.
-- [ ] Testes verificam as transições para aprovação, recusa e encaminhamento, incluindo resultado, cálculo, justificativa de duas ou três frases e referência à seção da apólice.
-- [ ] Uma aprovação de US$ 1.000 permite pagamento sem autorização; US$ 1.000,01 fica em `waiting_for_sign_off` e a chamada direta a `/pay` retorna `409`, sem criar pagamento.
-- [ ] Após autorização por atendente válido, o pagamento do valor aprovado é aceito e o caso fica `decided`. Atendente inexistente ou sem permissão não autoriza o pagamento.
-- [ ] Pagamentos negativos, com frações de centavo, diferentes do valor aprovado, anteriores à decisão ou para decisões recusadas/encaminhadas são rejeitados. Repetir a chamada não cria um segundo pagamento.
-- [ ] Alterar uma decisão concluída ou autorizada é rejeitado, impedindo que a autorização seja reutilizada para outro valor.
-- [ ] Eventos, autorização e pagamento persistem após reiniciar o backend. Uma falha de execução preserva os eventos e não apaga uma decisão ou um pagamento já concluído.
-- [ ] O OpenAPI confirma `operation_id` único, entradas obrigatórias e ausência de parâmetros opcionais em todas as operações.
-- [ ] Os testes do backend passam e `docs/STATUS.md` descreve estados, operações e o bloqueio financeiro.
+- [x] TestClient verifica `200` nos endpoints de leitura, os 25 casos na ordem correta e `404` para um identificador inexistente.
+- [x] A reserva só aceita `waiting`; duas tentativas concorrentes resultam em uma reserva e um conflito. Escritas da execução exigem o `thread_id` ativo.
+- [x] Testes verificam as transições para aprovação, recusa e encaminhamento, incluindo resultado, cálculo, justificativa de duas ou três frases e referência à seção da apólice.
+- [x] Uma aprovação de US$ 1.000 permite pagamento sem autorização; US$ 1.000,01 fica em `waiting_for_sign_off` e a chamada direta a `/pay` retorna `409`, sem criar pagamento.
+- [x] Após autorização por atendente válido, o pagamento do valor aprovado é aceito e o caso fica `decided`. Atendente inexistente ou sem permissão não autoriza o pagamento.
+- [x] Pagamentos negativos, com frações de centavo, diferentes do valor aprovado, anteriores à decisão ou para decisões recusadas/encaminhadas são rejeitados. Repetir a chamada não cria um segundo pagamento.
+- [x] Alterar uma decisão concluída ou autorizada é rejeitado, impedindo que a autorização seja reutilizada para outro valor.
+- [x] Eventos, autorização e pagamento persistem após reiniciar o backend. Uma falha de execução preserva os eventos e não apaga uma decisão ou um pagamento já concluído.
+- [x] O OpenAPI confirma `operation_id` único, entradas obrigatórias e ausência de parâmetros opcionais em todas as operações.
+- [x] Os testes do backend passam e `docs/STATUS.md` descreve estados, operações e o bloqueio financeiro.
 
 ## Fase 3 — Agente de análise de sinistros
 
