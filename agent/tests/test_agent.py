@@ -6,7 +6,7 @@ from fastapi.testclient import TestClient
 from langchain_core.language_models.fake_chat_models import GenericFakeChatModel
 from langchain_core.messages import AIMessage
 
-from agent import api, main
+from agent import api, cli, main
 from agent.tools import claim_tools
 from backend.main import app
 
@@ -169,3 +169,71 @@ def test_tools_are_bound_to_one_claim(client):
     tool = claim_tools("CLM-1001", "t1")[0]
     result = json.loads(tool.invoke({}))
     assert result["claim_id"] == "CLM-1001"
+
+
+def test_cli_one_claim_and_no_repeat(client, monkeypatch, capsys):
+    threads = []
+
+    def run(claim_id, thread_id):
+        threads.append(thread_id)
+        return main.run(claim_id, thread_id, scripted_model())
+
+    monkeypatch.setattr(cli, "run", run)
+    assert cli.main(["CLM-1001"]) == 0
+    assert "CLM-1001: approve $420.00 — decided" in capsys.readouterr().out
+    assert cli.main(["CLM-1001"]) == 1
+    assert "failed" in capsys.readouterr().err
+    assert len(set(threads)) == 2
+    events = client.get("/api/claims/CLM-1001/events").json()
+    assert len([e for e in events if e["type"] == "payment"]) == 1
+
+
+def test_cli_queue_order_skip_and_continue(client, monkeypatch, capsys):
+    ids = []
+    threads = []
+    client.post("/api/claims/CLM-1002/start", json={"thread_id": "busy"})
+    main.run("CLM-1003", "pending", scripted_model("approve", "1000.01", False))
+    main.run("CLM-1004", "finished", scripted_model("decline", "0.00", False))
+    seen = set()
+
+    def run(claim_id, thread_id):
+        ids.append(claim_id)
+        threads.append(thread_id)
+        if claim_id == "CLM-1001" and claim_id not in seen:
+            seen.add(claim_id)
+            raise RuntimeError("Temporary failure")
+        return main.run(claim_id, thread_id, scripted_model("refer", "0.00", False))
+
+    monkeypatch.setattr(cli, "run", run)
+    assert cli.main([]) == 1
+    assert ids == ["CLM-1001"] + [f"CLM-{i}" for i in range(1005, 1026)]
+    assert len(set(threads)) == len(threads)
+    assert "Completed: 21. Failed: 1." in capsys.readouterr().out
+    ids.clear()
+    assert cli.main([]) == 0
+    assert ids == ["CLM-1001"]
+    ids.clear()
+    assert cli.main([]) == 0
+    assert ids == []
+
+
+@pytest.mark.parametrize("argv", [[], ["missing"]])
+def test_cli_backend_unavailable(monkeypatch, capsys, argv):
+    def unavailable(*_args):
+        raise httpx.ConnectError("Backend unavailable")
+
+    monkeypatch.setattr(cli, "request", unavailable)
+    assert cli.main(argv) == 1
+    assert "Check BACKEND_URL" in capsys.readouterr().err
+
+
+def test_cli_missing_claim(monkeypatch, capsys):
+    def missing(*_args):
+        response = httpx.Response(
+            404, request=httpx.Request("GET", "http://test/missing")
+        )
+        response.raise_for_status()
+
+    monkeypatch.setattr(cli, "request", missing)
+    assert cli.main(["missing"]) == 1
+    assert "404" in capsys.readouterr().err

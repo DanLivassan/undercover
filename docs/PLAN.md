@@ -101,13 +101,13 @@ Adicionar `agent/__main__.py` para executar um caso ou a fila inteira de forma s
 
 Critérios de sucesso:
 
-- [ ] `uv run -m agent CLM-1001` inicia somente esse caso e imprime identificador, resultado, valor e estado final; testes do CLI substituem o modelo por um stub.
-- [ ] `uv run -m agent` processa cada caso em `waiting` na ordem devolvida pela API, sem executar casos em andamento, pendentes de autorização ou concluídos.
-- [ ] Os testes mostram que cada tentativa usa um `thread_id` distinto e que executar novamente a fila não repete decisões ou pagamentos concluídos.
-- [ ] Identificador inexistente e backend indisponível produzem mensagem útil e código de saída diferente de zero.
-- [ ] Uma falha em um caso é registrada; os demais casos da fila continuam. O resumo identifica sucessos e falhas e o processo termina com código não zero se houve falha.
-- [ ] Duas execuções não trabalham simultaneamente no mesmo caso, respeitando a reserva da fase 2.
-- [ ] `docs/STATUS.md` inclui `uv run -m agent` e `uv run -m agent CLM-1001`, necessidade do backend ativo e variáveis de ambiente exigidas.
+- [x] `uv run -m agent CLM-1001` inicia somente esse caso e imprime identificador, resultado, valor e estado final; testes do CLI substituem o modelo por um stub.
+- [x] `uv run -m agent` processa cada caso em `waiting` na ordem devolvida pela API, sem executar casos em andamento, pendentes de autorização ou concluídos.
+- [x] Os testes mostram que cada tentativa usa um `thread_id` distinto e que executar novamente a fila não repete decisões ou pagamentos concluídos.
+- [x] Identificador inexistente e backend indisponível produzem mensagem útil e código de saída diferente de zero.
+- [x] Uma falha em um caso é registrada; os demais casos da fila continuam. O resumo identifica sucessos e falhas e o processo termina com código não zero se houve falha.
+- [x] Duas execuções não trabalham simultaneamente no mesmo caso, respeitando a reserva da fase 2.
+- [x] `docs/STATUS.md` inclui `uv run -m agent` e `uv run -m agent CLM-1001`, necessidade do backend ativo e variáveis de ambiente exigidas.
 
 ## Fase 5 — Dashboard para os atendentes
 
